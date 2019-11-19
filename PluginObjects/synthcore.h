@@ -69,6 +69,7 @@ enum modDestination
 
 	// --- FILTER (add more here)
 	kFilter1_fc, // Fc
+	kFilter2_fc,
 
 	kLFO1_Shape,
 
@@ -158,6 +159,7 @@ struct SynthVoiceParameters
 
 	// --- Filters
 	std::shared_ptr<MoogFilterParameters> moogFilterParameters = std::make_shared<MoogFilterParameters>();
+	std::shared_ptr<MoogFilterParameters> filter2Parameters = std::make_shared<MoogFilterParameters>();
 
 	// --- DCA
 	std::shared_ptr<DCAParameters> dcaParameters = std::make_shared<DCAParameters>();
@@ -358,6 +360,7 @@ protected:
 		modDestinationData[kLFO1_Shape] = &(lfo1->getModulators()->modulationInputs[kAuxBipolarMod_2]);
 
 		modDestinationData[kFilter1_fc] = &(moogFilter->getModulators()->modulationInputs[kBipolarMod]);
+		modDestinationData[kFilter2_fc] = &(filter2->getModulators()->modulationInputs[kBipolarMod]);
 	}
 
 	// --- arrays to hold source/destination
@@ -416,6 +419,7 @@ protected:
 
 	// --- Filters
 	std::unique_ptr<MoogFilter> moogFilter;
+	std::unique_ptr<MoogFilter> filter2;
 
 	// --- output data structure
 	SynthRenderData synthOutputData;
