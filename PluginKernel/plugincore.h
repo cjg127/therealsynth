@@ -60,7 +60,10 @@ enum controlID {
 	eg1Retrigger = 87,
 	filter1Fc = 105,
 	filter1Q = 106,
-	eg2attackTime_mSec = 92
+	eg2attackTime_mSec = 92,
+	eg2decayTime_mSec = 94,
+	eg2sustainLevel = 95,
+	eg2releaseTime_mSec = 96
 };
 
 	// **--0x0F1F--**
@@ -193,6 +196,9 @@ private:
 	double filter1Fc = 0.0;
 	double filter1Q = 0.0;
 	double eg2attackTime_mSec = 0.0;
+	double eg2decayTime_mSec = 0.0;
+	double eg2sustainLevel = 0.0;
+	double eg2releaseTime_mSec = 0.0;
 
 	// --- Discrete Plugin Variables 
 	int lfo1Waveform = 0;

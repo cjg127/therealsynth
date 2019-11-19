@@ -333,6 +333,27 @@ bool PluginCore::initPluginParameters()
 	piParam->setBoundVariable(&eg2attackTime_mSec, boundVariableType::kDouble);
 	addPluginParameter(piParam);
 
+	// --- continuous control: EG2 Decay
+	piParam = new PluginParameter(controlID::eg2decayTime_mSec, "EG2 Decay", "mSec", controlVariableType::kDouble, 0.000000, 5000.000000, 100.000000, taper::kLinearTaper);
+	piParam->setParameterSmoothing(false);
+	piParam->setSmoothingTimeMsec(100.00);
+	piParam->setBoundVariable(&eg2decayTime_mSec, boundVariableType::kDouble);
+	addPluginParameter(piParam);
+
+	// --- continuous control: EG 2 Sustain
+	piParam = new PluginParameter(controlID::eg2sustainLevel, "EG 2 Sustain", "Units", controlVariableType::kDouble, 0.000000, 1.000000, 0.707000, taper::kLinearTaper);
+	piParam->setParameterSmoothing(false);
+	piParam->setSmoothingTimeMsec(100.00);
+	piParam->setBoundVariable(&eg2sustainLevel, boundVariableType::kDouble);
+	addPluginParameter(piParam);
+
+	// --- continuous control: EG2 Release
+	piParam = new PluginParameter(controlID::eg2releaseTime_mSec, "EG2 Release", "mSec", controlVariableType::kDouble, 0.000000, 10000.000000, 1000.000000, taper::kLinearTaper);
+	piParam->setParameterSmoothing(false);
+	piParam->setSmoothingTimeMsec(100.00);
+	piParam->setBoundVariable(&eg2releaseTime_mSec, boundVariableType::kDouble);
+	addPluginParameter(piParam);
+
 	// --- Aux Attributes
 	AuxParameterAttribute auxAttribute;
 
@@ -537,6 +558,21 @@ bool PluginCore::initPluginParameters()
 	auxAttribute.setUintAttribute(2147483648);
 	setParamAuxAttribute(controlID::eg2attackTime_mSec, auxAttribute);
 
+	// --- controlID::eg2decayTime_mSec
+	auxAttribute.reset(auxGUIIdentifier::guiControlData);
+	auxAttribute.setUintAttribute(2147483648);
+	setParamAuxAttribute(controlID::eg2decayTime_mSec, auxAttribute);
+
+	// --- controlID::eg2sustainLevel
+	auxAttribute.reset(auxGUIIdentifier::guiControlData);
+	auxAttribute.setUintAttribute(2147483648);
+	setParamAuxAttribute(controlID::eg2sustainLevel, auxAttribute);
+
+	// --- controlID::eg2releaseTime_mSec
+	auxAttribute.reset(auxGUIIdentifier::guiControlData);
+	auxAttribute.setUintAttribute(2147483648);
+	setParamAuxAttribute(controlID::eg2releaseTime_mSec, auxAttribute);
+
 
 	// **--0xEDA5--**
    
@@ -676,6 +712,11 @@ void PluginCore::updateParameters()
 	engineParams.voiceParameters->ampEGParameters->releaseTime_mSec = eg1releaseTime_mSec;
 	engineParams.voiceParameters->ampEGParameters->egMode = convertIntToEnum(eg1Mode, egTCMode);
 	engineParams.voiceParameters->ampEGParameters->retrigger = eg1Retrigger;
+
+	engineParams.voiceParameters->EG2Parameters->attackTime_mSec = eg2attackTime_mSec;
+	engineParams.voiceParameters->EG2Parameters->decayTime_mSec = eg2decayTime_mSec;
+	engineParams.voiceParameters->EG2Parameters->sustainLevel = eg2sustainLevel;
+	engineParams.voiceParameters->EG2Parameters->releaseTime_mSec = eg2releaseTime_mSec;
 
 
 	engineParams.voiceParameters->moogFilterParameters->fc = filter1Fc;
@@ -1068,6 +1109,9 @@ bool PluginCore::initPluginPresets()
 	setPresetParameter(preset->presetParameters, controlID::filter1Fc, 20000.000000);
 	setPresetParameter(preset->presetParameters, controlID::filter1Q, 1.000000);
 	setPresetParameter(preset->presetParameters, controlID::eg2attackTime_mSec, 0.000000);
+	setPresetParameter(preset->presetParameters, controlID::eg2decayTime_mSec, 0.000000);
+	setPresetParameter(preset->presetParameters, controlID::eg2sustainLevel, 0.000000);
+	setPresetParameter(preset->presetParameters, controlID::eg2releaseTime_mSec, 0.000000);
 	addPreset(preset);
 
 

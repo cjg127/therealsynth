@@ -34,6 +34,10 @@ enum modSource
 	kEG1_Normal,	// EG1 = amp EG
 	kEG1_Biased,
 
+	kEG2_Normal,
+	kEG2_Biased,
+
+
 	// --- oscillators here
 	kOsc1_Normal, // osc 1 output
 
@@ -113,6 +117,7 @@ struct SynthVoiceParameters
 		lfo1Parameters = params.lfo1Parameters;
 		rotorParameters = params.rotorParameters;
 		ampEGParameters = params.ampEGParameters;
+		EG2Parameters = params.EG2Parameters;
 		vectorJSData = params.vectorJSData;
 
 		return *this;
@@ -149,6 +154,7 @@ struct SynthVoiceParameters
 
 	// --- EGs
 	std::shared_ptr<EGParameters> ampEGParameters = std::make_shared<EGParameters>();
+	std::shared_ptr<EGParameters> EG2Parameters = std::make_shared<EGParameters>();
 
 	// --- Filters
 	std::shared_ptr<MoogFilterParameters> moogFilterParameters = std::make_shared<MoogFilterParameters>();
@@ -326,6 +332,8 @@ protected:
 		modSourceData[kLFO1_QuadPhase] = &lfo1Output.modulationOutputs[kLFOQuadPhaseOutput];
 		modSourceData[kEG1_Normal] = &ampEGOutput.modulationOutputs[kEGNormalOutput];
 		modSourceData[kEG1_Biased] = &ampEGOutput.modulationOutputs[kEGBiasedOutput];
+		modSourceData[kEG2_Normal] = &EG2Output.modulationOutputs[kEGNormalOutput];
+		modSourceData[kEG2_Biased] = &EG2Output.modulationOutputs[kEGBiasedOutput];
 		
 		// LFO2 -> LFO1
 		modSourceData[kLFO2_Normal] = &lfo2Output.modulationOutputs[kLFONormalOutput];
@@ -361,6 +369,7 @@ protected:
 	ModOutputData lfo2Output;
 	ModOutputData rotorOutput;
 	ModOutputData ampEGOutput;
+	ModOutputData EG2Output;
 
 	// --- mod source data: --- filter ---
 	// --- ModOutputData filterEGOutput;
@@ -400,6 +409,7 @@ protected:
 
 	// --- EGs
 	std::unique_ptr<EnvelopeGenerator> ampEG;
+	std::unique_ptr<EnvelopeGenerator> EG2;
 
 	// --- DCA(s)
 	std::unique_ptr<DCA> dca;

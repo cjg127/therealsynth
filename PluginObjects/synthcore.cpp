@@ -37,6 +37,7 @@ SynthVoice::SynthVoice(const std::shared_ptr<MidiInputData> _midiInputData,
 	moogFilter.reset(new MoogFilter(midiInputData, parameters->moogFilterParameters));
 
 	ampEG.reset(new EnvelopeGenerator(midiInputData, parameters->ampEGParameters));
+	EG2.reset(new EnvelopeGenerator(midiInputData, parameters->EG2Parameters));
 
 	dca.reset(new DCA(midiInputData, parameters->dcaParameters));
 
@@ -113,6 +114,7 @@ bool SynthVoice::reset(double _sampleRate)
 	rotor->reset(_sampleRate);
 
 	ampEG->reset(_sampleRate);
+	EG2->reset(_sampleRate);	
 
 	// **MOOG**
 	moogFilter->reset(_sampleRate);
@@ -127,6 +129,7 @@ bool SynthVoice::reset(double _sampleRate)
 	lfo1Output.clear();
 	lfo2Output.clear();
 	ampEGOutput.clear();
+	EG2Output.clear();
 	
 	// --- filter EG goes here (add more)
 
@@ -198,6 +201,9 @@ const SynthRenderData SynthVoice::renderAudioOutput()
 	// --- update/render (add more here)
 	ampEG->update(updateAllModRoutings);
 	ampEGOutput = ampEG->renderModulatorOutput();
+
+	EG2->update(updateAllModRoutings);
+	EG2Output = EG2->renderModulatorOutput();
 
 	// --- do all mods	
 	runModulationMatrix(updateAllModRoutings);
@@ -316,6 +322,7 @@ bool SynthVoice::doNoteOn(midiEvent& event)
 
 	//  EGs
 	ampEG->doNoteOn(midiPitch, event.midiData1, event.midiData2);
+	EG2->doNoteOn(midiPitch, event.midiData1, event.midiData2);
 
 	// --- needed forLFO  modes
 	lfo1->doNoteOn(midiPitch, event.midiData1, event.midiData2);
@@ -340,6 +347,7 @@ bool SynthVoice::doNoteOff(midiEvent& event)
 
 	// --- stop the oscillators (for now... HINT: put EG into Release Phase, then stop oscillator after EG expires)
 	ampEG->doNoteOff(midiPitch, event.midiData1, event.midiData2);
+	EG2->doNoteOff(midiPitch, event.midiData1, event.midiData2);
 
 	// --- set our current state; the ampEG will determine the final state
 	voiceNoteState = voiceState::kNoteOffState;
@@ -363,6 +371,7 @@ bool SynthVoice::processMIDIEvent(midiEvent& event)
 
 			// --- set amp EG into shutdown mode
 			ampEG->shutdown();
+			EG2->shutdown();
 
 			// --- set the steal flag; see start of render operation for the rest of the code
 			stealPending = true; 
@@ -415,7 +424,7 @@ SynthEngine::SynthEngine()
 	// --- kEG1_Normal -> kDCA_EGMod
 	parameters.setMM_HardwiredRouting(kEG1_Normal, kDCA_EGMod);
 
-	parameters.setMM_HardwiredRouting(kEG1_Normal, kFilter1_fc);
+	parameters.setMM_HardwiredRouting(kEG2_Normal, kFilter1_fc);
 
 	/*parameters.setMM_HardwiredRouting(kRotor_X, kOsc1_fo);
 	parameters.setMM_HardwiredRouting(kRotor_X, kOsc2_fo);
